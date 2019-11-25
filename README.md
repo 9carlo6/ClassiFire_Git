@@ -32,5 +32,10 @@ CREATE TABLE [dbo].[ClassifiedImages] (
 Successivamente Cliccare su aggiorna per apportare le modifiche.
 
 
-Per usufruire del servizio Flask scritto in Python occore l'ambiente di sviluppo adatto (ad esempio: PyCharm)
-Sull'ambiente di sviluppo aprire la cartella 
+Per usufruire del 'servizio Flask' scritto in Python occore l'ambiente di sviluppo adatto (ad esempio: PyCharm).
+Sull'ambiente di sviluppo aprire la cartella 'ClassiFire_Git/WebApp_FireSmoke' e (una volta installate le opportune librerie richieste)
+far partire il server.
+
+
+Completate le precedenti istruzioni occorre far partire la soluzione WebApp_FireSmoke da Visual Studio e collegarsi,
+tramite browser, alla pagina "https://localhost:5001".
