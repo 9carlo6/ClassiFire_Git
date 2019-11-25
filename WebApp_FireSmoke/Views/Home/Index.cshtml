@@ -1,0 +1,63 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    var currentLocation_string = "No location Selected";
+}
+
+    <head>
+        <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+        <script type="text/javascript">
+            function unlock(el1, el2) {
+                document.getElementById(el2).disabled = false;
+                document.getElementById(el2).style = "background:";
+            }</script>
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+
+    </head>
+
+<style>
+    .body_mod {
+                background-color: ghostwhite;
+                margin: 20px;
+                padding: 20px;
+                font-family: 'Montserrat';font-size: 22px;
+            }
+    #btnAction {
+        background: #3878c7;
+        padding: 10px 40px;
+        border: #3672bb 1px solid;
+        border-radius: 2px;
+        color: #FFF;
+        font-size: 0.9em;
+        cursor: pointer;
+        display: block;
+    }
+        #btnAction:disabled {
+            background: #6c99d2;
+        }
+</style>
+
+<br>
+<form method="post" action="/Home/ShowClassification" enctype="multipart/form-data">
+    <body class="body_mod">
+        <div class="container">
+            <div class="row">
+                <div class="col s12">
+                    <div class="card-panel">
+                        <div class="col-md-10">
+                            <h1 color="crimson">ClassiFire</h1>
+                            <br />
+                            <h2>Inserisci immagini o video</h2>
+                            <br />
+                            <input multiple type="file" name="files" value="Browse" oninput="unlock(this, 'btn1')" /><br />
+                            <input type="text" name="localization" id="lb1" size="50" style="background:transparent; border:none; color:transparent;" disabled />
+                            <br />
+                            <input type="submit" value="Valuta Immagini/video" id="btn1" style="background:transparent; border:none; color:transparent;" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</form>

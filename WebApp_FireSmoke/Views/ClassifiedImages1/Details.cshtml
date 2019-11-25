@@ -1,0 +1,96 @@
+﻿@model WebApp_FireSmoke.Models.ClassifiedImage
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ClassifiedImage</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Latitude)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Latitude)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Longitude)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Longitude)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.GeoPolygon)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.GeoPolygon)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Photo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Photo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PhotoName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PhotoName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FileType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FileType)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Geolocalization)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Geolocalization)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.GeoJSON)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.GeoJSON)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FireTypeClassification)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FireTypeClassification)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SmokeTypeClassification)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SmokeTypeClassification)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FireScoreClassification)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FireScoreClassification)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SmokeScoreClassification)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SmokeScoreClassification)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

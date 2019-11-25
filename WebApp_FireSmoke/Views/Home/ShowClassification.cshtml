@@ -1,0 +1,518 @@
+﻿@{
+    ViewData["Title"] = "ShowClassification";
+
+    List<String> listfilenames = (List<String>)ViewData["filenames"];
+    List<String> score = (List<String>)ViewData["score"];
+    int i = 0;
+    List<ClassifiedImage> classifiedImages = (List<ClassifiedImage>)ViewData["classifiedImages"];
+    int l = 0;
+}
+
+@model WebApp_FireSmoke.Models.ClassifiedImage
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+        <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+        <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+        <meta charset="utf-8">
+
+        <title>Pure CSS Percentage Circle</title>
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        @*Maps script and css*@
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-beta.2.rc.2/leaflet.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.css">
+
+    </head>
+
+<!-- styles for this little demo page -->
+<style type="text/css">
+
+    .body_mod {
+        background-color: ghostwhite;
+        margin: 20px;
+        padding: 20px;
+        font-family: 'Montserrat';
+        font-size: 15px;
+    }
+
+    #map {
+        margin: 20px 0px;
+        max-width: 960px;
+        min-height: 400px;
+    }
+
+
+    html, body, #basicMap {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+    }
+
+    .page {
+        margin: 40px;
+    }
+
+    h1 {
+        margin: 40px 0 60px 0;
+    }
+
+    .dark-area {
+        background-color: #666;
+        padding: 40px;
+        margin: 0 -40px 20px -40px;
+        clear: both;
+    }
+
+    .clearfix:before, .clearfix:after {
+        content: " ";
+        display: table;
+    }
+
+    .clearfix:after {
+        clear: both;
+    }
+
+    .clearfix {
+        *zoom: 1;
+    }
+
+    .label_mod {
+        display: block;
+        max-width: 100%;
+        line-height: 150%;
+        text-align: center;
+        margin-right: 12px;
+        font-weight: 700;
+    }
+
+    td.cell {
+        padding: 10px;
+        margin: 0 -40px 20px -40px;
+    }
+
+    div.polaroid {
+        width: 100%;
+        background-color: white;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    div.containers {
+        text-align: left;
+        padding: 5px 5px;
+    }
+</style>
+
+<link rel="stylesheet" href="/css/circle.css">
+
+<body class="body_mod">
+
+    <div class="page">
+
+        <h1 color="crimson">ClassiFire</h1>
+
+        @if (@ViewData["localization"] != null)
+        {
+            <h2>Localizzato in: @ViewData["localization"]</h2>
+            <br />
+        }
+
+        <div id="map" ></div>
+        <script>
+            var map = L.map('map').setView([0, 0], 1);
+
+            L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=ozrAFUaFX9mQ6jnjlbiL', {
+                attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>',
+            }).addTo(map);
+
+        </script>
+        <table border="0">
+            @foreach (var image in listfilenames)
+            {
+                //per eliminare lo / dal nome dell'immagine classificata
+                String image_name = image.Trim(new Char[] { '/' });
+
+                String fire_notfire_string = (@score[i]);
+                String smoke_notsmoke_string = (@score[i + 1]);
+                String fire_score_string = (@score[i + 2]);
+                String smoke_score_string = (@score[i + 3]);
+
+                //modifica da not_fire a not fire
+                if (fire_notfire_string == "not_fire")
+                {
+                    fire_notfire_string = "not fire";
+                }
+
+                //modifica da not_smoke a not smoke
+                if (smoke_notsmoke_string == "not_smoke")
+                {
+                    smoke_notsmoke_string = "not smoke";
+                }
+
+                double image_latitude = (classifiedImages[l].Latitude);
+                double image_longitude = (classifiedImages[l].Longitude);
+
+                String img_lat_str = image_latitude.ToString().Replace(",",".");
+                String img_lon_str = image_longitude.ToString().Replace(",",".");;
+
+
+                String image_geo = (classifiedImages[l].Geolocalization);
+
+                <tr>
+                    <td height="120" width="300" class="cell">
+                        <div class="polaroid">
+                            <img src=@image style="width:100%">
+                            <div class="containers">
+                                <label>@image_name</label>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="cell">
+                        <!-- default -->
+                        <label class="label_mod">@(fire_notfire_string)</label>
+                        <div class="clearfix">
+                            <div class="c100 p@(fire_score_string)">
+                                <span>@(fire_score_string)%</span>
+                                <div class="slice">
+                                    <div class="bar"></div>
+                                    <div class="fill"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <label class="label_mod">@(smoke_notsmoke_string)</label>
+                        <div class="clearfix">
+                            <div class="c100 p@(smoke_score_string)">
+                                <span>@(smoke_score_string)%</span>
+                                <div class="slice">
+                                    <div class="bar"></div>
+                                    <div class="fill"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="cell">
+                        <div id="map"></div>
+                        <script>
+                            if (@image_latitude != 0 && @image_longitude != 0)
+                            {
+                                L.marker([parseFloat(@image_latitude), parseFloat(@image_longitude)]).addTo(map).bindPopup("<b>@image_name</b><br>@fire_notfire_string/@smoke_notsmoke_string.");
+                            }
+                        </script>
+                    </td>
+                    <td width="500px">
+                        <div>
+                            @if (@image_latitude != 0 && @image_longitude != 0)
+                            {
+                            <div>
+                                <style>
+                                    #map@(l.ToString()){
+                                        margin: 20px 0px;
+                                        max-width: initial;
+                                        min-height: 400px;
+                                    }
+                                </style>
+                                <div id="map@(l.ToString())"></div>
+                                @*<div id='delete@(l.ToString())'>Delete Features</div>
+                                <a href='#' id='export@(l.ToString())'>Export Features</a>*@
+                            <script>
+                                    var center = [parseFloat(@image_latitude), parseFloat(@image_longitude)];
+
+                                    var map@(l.ToString()) = L.map('map@(l.ToString())').setView(center, 6);
+                                    L.tileLayer(
+                                        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                        attribution: 'Data © <a href="http://osm.org/copyright">OpenStreetMap</a>'
+                                    }).addTo(map@(l.ToString()));
+
+
+                                    L.marker([parseFloat(@image_latitude), parseFloat(@image_longitude)]).addTo(map@(l.ToString())).bindPopup("<b>@image_name</b><br>@fire_notfire_string/@smoke_notsmoke_string.");
+
+
+                                    var editableLayers@(l.ToString()) = new L.FeatureGroup();
+                                    map@(l.ToString()).addLayer(editableLayers@(l.ToString()));
+
+                                    var drawPluginOptions = {
+                                        position: 'topright',
+                                        draw: {
+                                            polygon: {
+                                                allowIntersection: false, // Restricts shapes to simple polygons
+                                                drawError: {
+                                                    color: '#e1e100', // Color the shape will turn when intersects
+                                                    message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+                                                },
+                                                shapeOptions: {
+                                                    color: '#97009c'
+                                                }
+                                            },
+                                            // disable toolbar item by setting it to false
+                                            polyline: false,
+                                            circle: false, // Turns off this drawing tool
+                                            rectangle: false,
+                                            marker: false,
+                                            },
+                                        edit: {
+                                            featureGroup: editableLayers@(l.ToString()), //REQUIRED!!
+                                            remove: false
+                                        }
+                                        };
+
+                                    // Initialise the draw control and pass it the FeatureGroup of editable layers
+                                    var drawControl = new L.Control.Draw(drawPluginOptions);
+                                    map@(l.ToString()).addControl(drawControl);
+
+                                    var editableLayers@(l.ToString()) = new L.FeatureGroup();
+                                    map@(l.ToString()).addLayer(editableLayers@(l.ToString()));
+
+                                    // questa variabile servirà per poter gestire la visibilità del bottone adibito al salvataggio dei cambiamenti
+                                    var counter_for_btn_visibility@(l.ToString()) = 0;
+                                    map@(l.ToString()).on('draw:created', function(e@(l.ToString())) {
+                                        var type = e@(l.ToString()).layerType,
+                                                layer = e@(l.ToString()).layer;
+
+                                        //if (type === 'marker') {
+                                        //layer.bindPopup('A popup!');
+                                        //}
+
+                                        //cancella prima gli altri e poi riscrive sul file
+                                        editableLayers@(l.ToString()).clearLayers();
+
+                                        //save changes on layer
+                                        editableLayers@(l.ToString()).addLayer(layer);
+
+                                        // Extract GeoJson from featureGroup
+                                        var data@(l.ToString()) = layer.toGeoJSON();
+
+                                        // Stringify the GeoJson
+                                        var convertedData@(l.ToString()) = encodeURIComponent(JSON.stringify(data@(l.ToString())));
+
+                                        //save original coordinates on db
+                                        document.getElementById('new_lat@(l.ToString())').setAttribute('value', @img_lat_str);
+                                        document.getElementById('new_lon@(l.ToString())').setAttribute('value', @img_lon_str);
+                                        document.getElementById('geoloc@(l.ToString())').setAttribute('value', @img_lat_str + "," + @img_lon_str);
+
+                                            counter_for_btn_visibility@(l.ToString())++;
+
+                                            if (counter_for_btn_visibility@(l.ToString()) >= 1) {
+                                                document.getElementById('save_btn@(l.ToString())').disabled = false;
+                                                document.getElementById('save_btn@(l.ToString())').style = "background:";
+                                            }
+                                    });
+
+
+                                    //funzione per salvare il poligono della featureGroup (relativa all'immagine presa in considerazione) all'interno del DB
+                                    function submitFunction@(l.ToString())(e@(l.ToString())){
+                                        // Extract GeoJson from featureGroup
+                                        var data = editableLayers@(l.ToString()).toGeoJSON();
+                                        var convertedData1@(l.ToString()) = encodeURIComponent(JSON.stringify(data));
+                                        // Ricava una sringa dal json
+                                        var text = decodeURIComponent(convertedData1@(l.ToString()).replace(/\+/g, ' '));
+                                        var obj = JSON.parse(text);
+                                        var i_json;
+                                        for (i_json = 0; i_json < obj.features.length; i_json++) {
+                                            if (obj.features[i_json].geometry.type == "Polygon") {
+                                                var coordinates_polygon_json = obj.features[i_json].geometry.coordinates;
+                                                var coordinates_poly_@(l.ToString()) = coordinates_polygon_json.toString();
+                                                //save on db
+                                                document.getElementById('poly@(l.ToString())').setAttribute('value', coordinates_poly_@(l.ToString()));
+                                            }
+                                        }
+                                    }
+
+                            </script>
+                            </div>
+
+                            }
+                            else
+                            {
+                               
+                                <div>
+                                    <style>
+                                        #map@(l.ToString()){
+                                            margin: 20px 0px;
+                                            max-width: initial;
+                                            min-height: 400px;
+                                        }
+                                    </style>
+                                    <div id="map@(l.ToString())"></div>
+                                    @*<div id='delete@(l.ToString())'>Delete Features</div>
+                                    <a href='#' id='export@(l.ToString())'>Export Features</a>*@
+                                    <script>
+                                        var map@(l.ToString()) = L.map('map@(l.ToString())').setView([0, 0], 1);
+                                            L.tileLayer(
+                                                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                attribution: 'Data © <a href="http://osm.org/copyright">OpenStreetMap</a>'
+                                                }).addTo(map@(l.ToString()));
+
+                                       
+                                        var editableLayers@(l.ToString()) = new L.FeatureGroup();
+                                        map@(l.ToString()).addLayer(editableLayers@(l.ToString()));
+
+                                        var drawPluginOptions = {
+                                            position: 'topright',
+                                            draw: {
+                                                polygon: {
+                                                    allowIntersection: false, // Restricts shapes to simple polygons
+                                                    drawError: {
+                                                        color: '#e1e100', // Color the shape will turn when intersects
+                                                        message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+                                                    },
+                                                    shapeOptions: {
+                                                        color: '#97009c'
+                                                    }
+                                                },
+                                                // disable toolbar item by setting it to false
+                                                polyline: false,
+                                                circle: false, // Turns off this drawing tool
+                                                rectangle: false,
+                                                marker: true,
+                                                },
+                                            edit: {
+                                                featureGroup: editableLayers@(l.ToString()), //REQUIRED!!
+                                                remove: false
+                                            }
+                                        };
+
+                                        var drawControl = new L.Control.Draw(drawPluginOptions);
+                                        map@(l.ToString()).addControl(drawControl);
+
+                                        var editableLayers@(l.ToString()) = new L.FeatureGroup();
+                                        map@(l.ToString()).addLayer(editableLayers@(l.ToString()));
+
+                                        var counter_for_btn_visibility@(l.ToString()) = 0;
+                                        map@(l.ToString()).on('draw:created', function(e@(l.ToString())) {
+                                            var type = e@(l.ToString()).layerType,
+                                            layer = e@(l.ToString()).layer;
+
+                                            if (type === 'marker') {
+                                                //layer.bindPopup('A popup!');
+                                                //lo cancella
+                                            }
+
+                                            //cancella prima gli altri e poi riscrive sul file
+                                            //editableLayers@(l.ToString()).clearLayers();
+
+                                            //save changes on layer
+                                            editableLayers@(l.ToString()).addLayer(layer);
+
+                                            // Extract GeoJson from featureGroup
+                                            var data@(l.ToString()) = layer.toGeoJSON();
+                                            // Stringify the GeoJson
+                                            var convertedData@(l.ToString()) = encodeURIComponent(JSON.stringify(data@(l.ToString())));
+
+                                            
+                                            counter_for_btn_visibility@(l.ToString())++;
+
+                                            if (counter_for_btn_visibility@(l.ToString()) >= 2) {
+                                                document.getElementById('save_btn@(l.ToString())').disabled = false;
+                                                document.getElementById('save_btn@(l.ToString())').style = "background:";
+                                            }
+                                        });
+
+
+                                        @*// on click, clear all layers
+                                        document.getElementById('delete@(l.ToString())').onclick = function(e) {
+                                            editableLayers@(l.ToString()).clearLayers();
+                                        }*@
+
+
+                                        //funzione per salvare i dettagli della featureGroup (relativa all'immagine presa in considerazione) all'interno del DB
+                                        function submitFunction@(l.ToString())(e@(l.ToString())){
+                                            // Extract GeoJson from featureGroup
+                                            var data = editableLayers@(l.ToString()).toGeoJSON();
+
+                                            var convertedData1@(l.ToString()) = encodeURIComponent(JSON.stringify(data));
+
+                                            // Ricava una sringa dal json
+                                            var text = decodeURIComponent(convertedData1@(l.ToString()).replace(/\+/g, ' '));
+
+                                            var obj = JSON.parse(text);
+                                            var i_json;
+                                            
+                                            for (i_json = 0; i_json < obj.features.length; i_json++) {
+                                                if (obj.features[i_json].geometry.type == "Point") {
+                                                    var coordinates_json = obj.features[i_json].geometry.coordinates;
+                                                    var coordinates = coordinates_json.toString();
+                                                    var new_latitutde@(l.ToString()) = coordinates.substring(0, coordinates.search(",") - 1);
+                                                    var new_longitude@(l.ToString()) = coordinates.substring(coordinates.lastIndexOf(",") + 1, coordinates.length);
+
+                                                    L.marker([parseFloat(new_latitutde@(l.ToString()).replace(",", ".")), parseFloat(new_longitude@(l.ToString()).replace("," , "."))]).addTo(map).bindPopup("<b>@image_name</b><br>@fire_notfire_string/@smoke_notsmoke_string</b>");
+
+                                                    //save on db
+                                                    document.getElementById('new_lat@(l.ToString())').setAttribute('value', new_latitutde@(l.ToString()));
+                                                    document.getElementById('new_lon@(l.ToString())').setAttribute('value', new_longitude@(l.ToString()));
+                                                    document.getElementById('geoloc@(l.ToString())').setAttribute('value', coordinates);
+
+                                                }
+
+                                                if (obj.features[i_json].geometry.type == "Polygon") {
+                                                    var coordinates_polygon_json = obj.features[i_json].geometry.coordinates;
+                                                    var coordinates_poly_@(l.ToString()) = coordinates_polygon_json.toString();
+
+                                                    //save on db
+                                                    document.getElementById('poly@(l.ToString())').setAttribute('value', coordinates_poly_@(l.ToString()));
+
+                                                }
+
+                                                
+                                            }
+                                        }
+
+                                        @*document.getElementById('export@(l.ToString())').onclick = function(e) {
+
+                                            // Extract GeoJson from featureGroup
+                                            var data = editableLayers@(l.ToString()).toGeoJSON();
+
+                                            // Stringify the GeoJson
+                                            //var convertedData = encodeURIComponent(JSON.stringify(data));
+                                            //var convertedData1@(l.ToString()) = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+                                            var convertedData1@(l.ToString()) = encodeURIComponent(JSON.stringify(data));
+
+                                            // Create export
+                                            //document.getElementById('export@(l.ToString())').setAttribute('href', 'data:' + convertedData1@(l.ToString()));
+                                            //document.getElementById('export@(l.ToString())').setAttribute('download','data.geojson');
+                                        }*@
+
+                                    </script>
+                                </div>
+                            }
+                        </div>
+                    </td>
+                    <td class="cell">
+                        <label text-align="center">
+                            enter the location and area affected by the fire / smoke on the map
+                        </label>
+                        <form asp-action="PutClassifiedImage" onsubmit="submitFunction@(l.ToString())()">
+                            <input type="hidden" asp-for="Id" value=@classifiedImages[l].Id />
+                            <input type="hidden" asp-for="Date" value=@classifiedImages[l].Date />
+                            <input type="hidden" asp-for="Latitude" value=null id="new_lat@(l.ToString())" />
+                            <input type="hidden" asp-for="Longitude" value=null id="new_lon@(l.ToString())"/>
+                            <input type="hidden" asp-for="GeoPolygon" value=null id="poly@(l.ToString())"  />
+                            <input type="hidden" asp-for="Photo" value=@classifiedImages[l].Photo />
+                            <input type="hidden" asp-for="PhotoName" value=@classifiedImages[l].PhotoName />
+                            <input type="hidden" asp-for="FileType" value=@classifiedImages[l].FileType />
+                            <input type="hidden" asp-for="Geolocalization" value=null id="geoloc@(l.ToString())"/>
+                            <input type="hidden" asp-for="GeoJSON" value=@classifiedImages[l].GeoJSON />
+                            <input type="hidden" asp-for="FireTypeClassification" value=@classifiedImages[l].FireTypeClassification />
+                            <input type="hidden" asp-for="SmokeTypeClassification" value=@classifiedImages[l].SmokeTypeClassification />
+                            <input type="hidden" asp-for="FireScoreClassification" value=@classifiedImages[l].FireScoreClassification />
+                            <input type="hidden" asp-for="SmokeScoreClassification" value=@classifiedImages[l].SmokeScoreClassification />
+                            <input type="submit" id="save_btn@(l.ToString())" value="Save Changes" class="btn btn-default" style="background:transparent; border:none; color:transparent;" disabled/>
+                        </form>
+                    </td>
+                </tr>
+                i = i + 4;
+                l = l + 1;
+            }
+            <tr></tr>
+        </table>
+    </div>
+
+</body>
+
+
+
